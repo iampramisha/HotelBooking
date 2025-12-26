@@ -1,26 +1,561 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+html,
+body {
+  width: 100%;
+  /* height: 100%; */
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Scroll Bar */
+
+::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(66, 66, 66, 0.2);
+  border: 0px;
+  background-clip: padding-box;
+  border-radius: 5px;
+}
+
+/* Loader Main */
+
+.center-loader {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 150px 0;
+}
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #e61e4d;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* User Setting Loader */
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.load {
+  width: 80px;
+  height: 80px;
+  margin: 110px auto 0;
+  border: solid 6px #e61e4d;
+  border-radius: 50%;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  -webkit-transition: all 0.5s ease-in;
+  -webkit-animation-name: rotate;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+
+  transition: all 0.5s ease-in;
+  animation-name: rotate;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+/* Button Loader */
+.lds-dual-ring {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Login & Register */
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5rem;
+
+  font-weight: 700;
+}
+
+.user-dashboard .wrapper {
+  margin-top: 3rem;
+}
+
+.wrapper form {
+  padding: 2.5rem 3rem;
+}
+
+.wrapper form a {
+  font-size: 0.9rem;
+  color: grey;
+}
+
+.form-btn {
+  background-color: #e61e4d;
+  border-color: #e61e4d;
+  color: white;
+  margin-top: 2.5rem;
+  font-weight: bold;
+  --bs-btn-active-bg: #b02a37;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #dc3545;
+  --bs-btn-disabled-border-color: #dc3545;
+}
+
+.form-btn:hover {
+  background-color: #bb2d3b;
+  border-color: #bb2d3b;
+  color: white;
+}
+
+.react-datepicker {
+  width: 100%;
+}
+
+.react-datepicker__month-container {
+  float: left;
+  width: 100%;
+}
+
+/* Avatar */
+.avatar {
+  display: inline-block;
+  margin-bottom: 0;
+  height: 3rem;
+  width: 3rem;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rounded-circle {
+  border-radius: 50% !important;
+}
+
+/* Header User Profile */
+
+/* Navbar */
+nav {
+  background-color: white;
+  padding: 1rem 1rem;
+  -webkit-box-shadow: 0 4px 6px -6px #222;
+  -moz-box-shadow: 0 4px 6px -6px #222;
+  box-shadow: 0 4px 6px -6px #222;
+}
+
+.login-header-btn {
+  background-color: #e61e4d;
+}
+
+.login-header-btn a {
+  color: white;
+}
+
+/* Home page */
+
+.stays-heading {
+  font-weight: 700;
+}
+
+.back-to-search {
+  font-size: 1.1rem;
+  color: #e61e4d;
+  font-weight: 600;
+}
+
+.back-to-search:hover {
+  color: #e61e4d;
+}
+
+.card {
+  height: 100%;
+  border: 0px;
+}
+
+.card-title a {
+  color: #2e2e2e;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.card-title a:hover {
+  color: #e61e4d;
+  text-decoration: none;
+}
+
+.card-body {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.card-text {
+  font-size: 1.2rem;
+  color: black;
+}
+
+.card-body .view-btn {
+  background-color: #e61e4d;
+  color: white;
+  text-decoration: none;
+}
+
+.card-body .view-btn:hover {
+  background-color: #e61e4d;
+  color: white;
+}
+
+.card-img-top {
+  border-radius: 0.8rem;
+}
+
+.ratings {
+  font-size: 1.2rem;
+  color: #e61e4d;
+}
+
+.no-of-reviews {
+  font-size: 0.85rem;
+  color: grey;
+  margin-left: 0.5rem;
+  padding-top: 0.3rem;
+}
+
+/* Room Details Page */
+
+.booking-card .booking-btn:hover {
+  color: white;
+  background-color: #e61e4d;
+}
+
+.price-per-night {
+  font-size: 1.3rem;
+}
+
+.booking-card {
+  border: 1px solid #e3e3e3;
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+
+.room-feature {
+  font-size: 1.1rem;
+  color: #404040;
+}
+
+.room-feature p {
+  margin-left: 0.4rem;
+  display: inline-block;
+}
+
+/* Reviews */
+.review_user {
+  font-size: 0.8rem;
+  color: grey;
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  color: grey;
+  bottom: 0;
+  width: 100%;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Pagination */
+.page-item.active .page-link {
+  background-color: #e61e4d;
+  border-color: #e61e4d;
+  color: #fff;
+}
+
+.page-item.active .page-link:hover {
+  color: #fff;
+  cursor: pointer;
+}
+
+.pagination .page-link {
+  color: #e61e4d;
+}
+
+.pagination .page-link:hover {
+  color: #e61e4d;
+}
+
+/* Booking Details */
+.booking-details p {
+  margin-left: 1.5rem;
+}
+
+.redColor {
+  color: red;
+}
+
+.greenColor {
+  color: green;
+}
+
+/* Sidebar */
+
+.list-group-item:first-child {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.list-group-item {
+  border: none;
+}
+
+.list-group-item.active {
+  background-color: #f3f4f6;
+  border-color: #f3f4f6;
+  border-radius: 0.3rem;
+  color: #e61e4d;
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+/* F/* Weekday and date alignment in react-datepicker */
+.react-datepicker__day-names,
+.react-datepicker__week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 equal columns */
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day {
+  margin: 0 auto;       /* center horizontally */
+  width: 2.5rem;        /* fixed width for all cells */
+  height: 2.5rem;       /* makes it square */
+  line-height: 2.5rem;  /* vertically center text */
+  display: flex;        
+  align-items: center;
+  justify-content: center;
 }
