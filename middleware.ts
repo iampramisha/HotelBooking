@@ -1,26 +1,22 @@
-import {withAuth} from "next-auth/middleware"
-export default withAuth
-  (  function middleware(req){
+import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
-    })
-//This tells NextAuth: “if the user needs to sign in, send them to /login instead of the default page”.
+export default withAuth(
+  function middleware(req) {
+    if (req.nextUrl.pathname.startsWith("/admin")) {
+      const role = (req.nextauth.token?.user as { role?: string } | undefined)?.role;
+      if (role !== "admin") {
+        return NextResponse.redirect(new URL("/", req.url));
+      }
+    }
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
+  }
+);
 
-// So when the middleware sees no valid session for /me/update, it triggers a redirect to /login.
-export const config={
-    matcher:['/me/:path*']
-}
-//This will make the middleware only run on URLs that match /me/....
-
-// But by itself, this does not enforce authentication. It just tells Next.js “run middleware here.”
-
-// 2️⃣ Why we use withAuth
-
-// withAuth is a wrapper provided by NextAuth to automatically protect routes.
-
-// It handles:
-
-// Checking if a user is logged in (req.nextauth.token exists).
-
-// Redirecting unauthenticated users to login.
-
-// Optionally allowing public routes.
+export const config = {
+  matcher: ["/me/:path*", "/admin/:path*"],
+};

@@ -1,0 +1,84 @@
+"use client";
+import { useAdminDeleteRoomMutation, useAdminGetRoomsQuery } from "@/redux/api/roomApi";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
+import CustomPagination from "@/components/layout/CustomPagination";
+
+const RoomsList = () => {
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page")) || 1;
+
+  const { data, isLoading } = useAdminGetRoomsQuery(page);
+  const [deleteRoom] = useAdminDeleteRoomMutation();
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this room?")) return;
+    const res = await deleteRoom(id);
+    if ("data" in res) toast.success("Room deleted");
+    else toast.error("Failed to delete");
+  };
+
+  if (isLoading) return <p>Loading...</p>;
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold">All Rooms ({data?.roomsCount})</h1>
+        <Link
+          href="/admin/rooms/new"
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+        >
+          + New Room
+        </Link>
+      </div>
+
+      <div className="overflow-x-auto bg-white rounded shadow">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-100 text-left">
+            <tr>
+              <th className="p-3">ID</th>
+              <th className="p-3">Name</th>
+              <th className="p-3">Category</th>
+              <th className="p-3">Price/Night</th>
+              <th className="p-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.rooms?.map((room: any) => (
+              <tr key={room._id} className="border-t hover:bg-gray-50">
+                <td className="p-3 text-xs text-gray-500">{room._id}</td>
+                <td className="p-3">{room.name}</td>
+                <td className="p-3">{room.category}</td>
+                <td className="p-3">${room.pricePerNight}</td>
+                <td className="p-3 flex gap-2">
+                  <Link
+                    href={`/admin/rooms/${room._id}/edit`}
+                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
+                  >
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(room._id)}
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-6 flex justify-center">
+        <CustomPagination
+          resPerPage={data?.resPerPage}
+          filteredRoomsCount={data?.filteredRoomsCount}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default RoomsList;

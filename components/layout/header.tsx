@@ -106,9 +106,11 @@ if(data){
               {/* show/hide via state (block vs hidden) — no CSS hover-only */}
               {dropdownOpen && (
                 <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                  <Link href="/admin/dashboard" className="block px-4 py-2 hover:bg-gray-100">
-                    Dashboard
-                  </Link>
+                  {user?.role === "admin" && (
+                    <Link href="/admin/rooms" className="block px-4 py-2 hover:bg-gray-100">
+                      Admin Dashboard
+                    </Link>
+                  )}
                   <Link href="/bookings/me" className="block px-4 py-2 hover:bg-gray-100">
                     My Bookings
                   </Link>
