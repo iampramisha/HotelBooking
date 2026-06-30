@@ -5,6 +5,35 @@ import errorHandler from "@/backend/utils/errorHandler";
 import  catchAsyncErrors  from "@/backend/middlewares/catchAsyncErrors";
 import APIFilters from "../utils/apiFilters";
 import { roundDistance, sortRoomsByDistance } from "../utils/haversine";
+import { geocodeAddress, locationFromGeocodeResult } from "../utils/geocodeAddress";
+
+/** Backfill coordinates for rooms saved before geocoding worked. */
+async function resolveRoomCoordinates(rooms: IRoom[]): Promise<IRoom[]> {
+  const resolved: IRoom[] = [];
+
+  for (const room of rooms) {
+    if (room.location?.coordinates?.length === 2) {
+      resolved.push(room);
+      continue;
+    }
+
+    if (!room.address) {
+      resolved.push(room);
+      continue;
+    }
+
+    const loc = await geocodeAddress(room.address);
+    if (loc) {
+      const location = locationFromGeocodeResult(loc);
+      await Room.findByIdAndUpdate(room._id, { location });
+      room.location = location;
+    }
+
+    resolved.push(room);
+  }
+
+  return resolved;
+}
 
 // GET all rooms
 export const allRooms = async (req: NextRequest, params?: any) => {
@@ -39,8 +68,9 @@ export const allRooms = async (req: NextRequest, params?: any) => {
     }
 
     const allFilteredRooms: IRoom[] = await apiFilters.query.clone().exec();
+    const roomsWithCoords = await resolveRoomCoordinates(allFilteredRooms);
     const sortedByDistance = sortRoomsByDistance(
-      allFilteredRooms,
+      roomsWithCoords,
       userLat,
       userLng,
       maxDistance
@@ -108,7 +138,10 @@ export const getRoomDetails = catchAsyncErrors(
     await dbConnect();
 
     const { id } = await context.params;  // Await params because it's a Promise
-    const room = await Room.findById(id);
+    const room = await Room.findById(id).populate({
+      path: "reviews.user",
+      select: "name avatar",
+    });
 
     if (!room) {
    throw new errorHandler('Room not found', 404);
@@ -120,6 +153,73 @@ export const getRoomDetails = catchAsyncErrors(
     return NextResponse.json({
       success: true,
       room,
+    });
+  }
+);
+
+export const createReview = catchAsyncErrors(
+  async (
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
+  ) => {
+    await dbConnect();
+
+    const { id } = await context.params;
+    const { rating, comment } = await req.json();
+    const numericRating = Number(rating);
+
+    if (!numericRating || numericRating < 1 || numericRating > 5) {
+      throw new errorHandler("Please provide a rating between 1 and 5", 400);
+    }
+
+    if (!comment?.trim()) {
+      throw new errorHandler("Please provide a review comment", 400);
+    }
+
+    const room = await Room.findById(id);
+    if (!room) {
+      throw new errorHandler("Room not found", 404);
+    }
+
+    const userId = String(req.user!._id);
+    const reviews = room.reviews || [];
+    const existingReviewIndex = reviews.findIndex(
+      (review) => String(review.user) === userId
+    );
+
+    if (existingReviewIndex >= 0) {
+      const oldRating = reviews[existingReviewIndex].rating || 0;
+      reviews[existingReviewIndex].rating = numericRating;
+      reviews[existingReviewIndex].comment = comment.trim();
+      reviews[existingReviewIndex].createdAt = new Date();
+
+      const count = room.numOfReviews || reviews.length;
+      const total = (room.ratings || 0) * count - oldRating + numericRating;
+      room.ratings = count > 0 ? total / count : numericRating;
+    } else {
+      reviews.push({
+        user: req.user!._id as any,
+        rating: numericRating,
+        comment: comment.trim(),
+        createdAt: new Date(),
+      });
+      room.reviews = reviews;
+
+      const count = room.numOfReviews || 0;
+      room.ratings = ((room.ratings || 0) * count + numericRating) / (count + 1);
+      room.numOfReviews = count + 1;
+    }
+
+    await room.save();
+
+    const updatedRoom = await Room.findById(id).populate({
+      path: "reviews.user",
+      select: "name avatar",
+    });
+
+    return NextResponse.json({
+      success: true,
+      room: updatedRoom,
     });
   }
 );

@@ -12,15 +12,21 @@ const Search = () => {
   const [geoError, setGeoError] = useState("");
   const router = useRouter();
 
-  const buildQuery = (extra: Record<string, string> = {}) => {
+  const buildQuery = (options: { nearMe?: boolean; lat?: string; lng?: string } = {}) => {
     const params = new URLSearchParams();
-    if (extra.lat) params.set("lat", extra.lat);
-    if (extra.lng) params.set("lng", extra.lng);
-    if (extra.nearMe) params.set("nearMe", extra.nearMe);
-    if (location && !extra.nearMe) params.set("location", location);
+
+    if (options.nearMe) {
+      params.set("nearMe", "true");
+      if (options.lat) params.set("lat", options.lat);
+      if (options.lng) params.set("lng", options.lng);
+      if (maxDistance) params.set("maxDistance", maxDistance);
+    } else {
+      if (location) params.set("location", location);
+    }
+
     if (guests) params.set("guestCapacity", guests);
     if (category) params.set("category", category);
-    if (extra.nearMe && maxDistance) params.set("maxDistance", maxDistance);
+
     return params.toString();
   };
 
@@ -42,9 +48,9 @@ const Search = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
         const query = buildQuery({
+          nearMe: true,
           lat: latitude.toString(),
           lng: longitude.toString(),
-          nearMe: "true",
         });
         setGeoLoading(false);
         router.push(`/?${query}`);
@@ -52,12 +58,14 @@ const Search = () => {
       (err) => {
         setGeoLoading(false);
         if (err.code === err.PERMISSION_DENIED) {
-          setGeoError("Location permission denied. Please allow location access.");
+          setGeoError("Location permission denied. Please allow location access in your browser.");
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+          setGeoError("Could not detect your location. Check that location services are enabled.");
         } else {
-          setGeoError("Could not detect your location. Try again.");
+          setGeoError("Location request timed out. Please try again.");
         }
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 
@@ -85,7 +93,7 @@ const Search = () => {
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Hotels Near Me</h2>
               <p className="text-sm text-gray-500 mt-0.5">
-                Uses <span className="font-medium text-rose-600">Haversine Distance Algorithm</span> to rank hotels by proximity to your GPS location
+                Uses your device GPS and ranks hotels by real distance. Your browser will ask for location permission.
               </p>
             </div>
           </div>
@@ -123,7 +131,7 @@ const Search = () => {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
-                Find Nearest Hotels
+                Find Nearest Hotels (uses GPS)
               </>
             )}
           </button>
@@ -139,11 +147,15 @@ const Search = () => {
           <div className="flex-grow border-t border-gray-200" />
         </div>
 
-        {/* Text search form */}
+        {/* Text search form — does NOT use GPS or distance */}
         <form
           onSubmit={handleTextSearch}
           className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 space-y-4"
         >
+          <p className="text-xs text-gray-500 -mt-1">
+            City search matches hotel address or city name. It does not use your GPS or the distance filter above.
+          </p>
+
           <div>
             <label htmlFor="location_field" className="block text-sm font-medium text-gray-700 mb-1">
               Location
@@ -151,7 +163,7 @@ const Search = () => {
             <input
               type="text"
               id="location_field"
-              placeholder="e.g. Kathmandu, Pokhara, Lalitpur"
+              placeholder="e.g. Kathmandu, Pokhara, Durbar Marg"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-rose-500 focus:outline-none"
@@ -201,7 +213,7 @@ const Search = () => {
             type="submit"
             className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl transition"
           >
-            Search Rooms
+            Search by City
           </button>
         </form>
       </div>

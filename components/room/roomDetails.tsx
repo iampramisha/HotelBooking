@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { IRoom } from "@/backend/models/room";
 import StarRatings from "react-star-ratings";
 import RoomSlider from "./roomSlider";
@@ -17,7 +17,8 @@ interface Props {
 }
 
 const RoomDetails = ({ data }: Props) => {
-  const { room } = data;
+  const [room, setRoom] = useState(data.room);
+  const [showReviewModal, setShowReviewModal] = useState(false);
 
   return (
     <div className="container mx-auto px-4">
@@ -34,7 +35,7 @@ const RoomDetails = ({ data }: Props) => {
         <StarRatings
           rating={room?.ratings || 0}
           starRatedColor="#e61e4d"
-          numberOfStars={6}
+          numberOfStars={5}
           starDimension="22px"
           starSpacing="1px"
           name="rating"
@@ -61,20 +62,12 @@ const RoomDetails = ({ data }: Props) => {
 
         {/* Right Column: Booking Card + Map */}
         <div className="flex-1 lg:max-w-md flex flex-col gap-6">
-          {/* Booking Card */}
-          {/* <div className="booking-card shadow p-6 rounded-lg"> */}
-            {/* <p className="price-per-night text-lg font-semibold mb-2">
-              <b>${room?.pricePerNight || 100}</b> / night
-            </p>
-            <hr className="my-4" /> */}
-            <BookingDatePicker room={room} />
-          {/* </div> */}
+          <BookingDatePicker room={room} />
 
-          {/* Room Map */}
           {room?.location?.coordinates && (
             <RoomMap
-              latitude={room.location.coordinates[1]} // lat
-              longitude={room.location.coordinates[0]} // lng
+              latitude={room.location.coordinates[1]}
+              longitude={room.location.coordinates[0]}
               address={room.address || room.location.formattedAddress || ""}
             />
           )}
@@ -84,18 +77,20 @@ const RoomDetails = ({ data }: Props) => {
       {/* Review Section */}
       <button
         type="button"
-        className="btn form-btn mt-4 mb-5"
-        data-bs-toggle="modal"
-        data-bs-target="#ratingModal"
+        onClick={() => setShowReviewModal(true)}
+        className="btn form-btn mt-4 mb-5 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg transition"
       >
         Submit Your Review
       </button>
 
-      {/* Review Modal */}
-      <NewReview />
+      <NewReview
+        roomId={String(room._id)}
+        open={showReviewModal}
+        onClose={() => setShowReviewModal(false)}
+        onSuccess={(updatedRoom) => setRoom(updatedRoom)}
+      />
 
-      {/* List of Reviews */}
-      <ListReviews />
+      <ListReviews reviews={room.reviews} numOfReviews={room.numOfReviews} />
     </div>
   );
 };

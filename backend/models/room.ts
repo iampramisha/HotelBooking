@@ -1,5 +1,5 @@
 import mongoose,{Document, Types,Schema} from "mongoose";
-import geocoder from "../utils/geoCoder";
+import { geocodeAddress, locationFromGeocodeResult } from "../utils/geocodeAddress";
 
 export interface IImage {
   alt?: string;
@@ -21,6 +21,7 @@ export interface IReview {
   user?: Types.ObjectId;
   rating?: number;
   comment?: string;
+  createdAt?: Date;
 }
 
 export interface IRoom extends Document {
@@ -161,6 +162,10 @@ url:{
       comment:{
         type: String,
         required:false
+      },
+      createdAt:{
+        type: Date,
+        default: Date.now,
       }
     }
   ],
@@ -183,21 +188,12 @@ roomSchema.pre<IRoom>("save", async function (next) {
   if (!this.isModified("address")) return next();
 
   try {
-    const loc = await geocoder.geocode(this.address);
-    if (loc.length > 0) {
-      this.location = {
-        type: "Point",
-        coordinates: [loc[0].longitude, loc[0].latitude],
-        formattedAddress: loc[0].formattedAddress,
-        city: loc[0].city,
-        state: loc[0].state,
-        zipCode: loc[0].zipcode,
-        country: loc[0].country,
-      };
+    const loc = await geocodeAddress(this.address);
+    if (loc) {
+      this.location = locationFromGeocodeResult(loc);
+    } else {
+      console.warn(`Could not geocode address: "${this.address}"`);
     }
-
-    // Optional: remove the plain address from DB
-    // this.address = undefined;
 
     next();
   } catch (err) {

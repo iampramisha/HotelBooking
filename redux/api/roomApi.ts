@@ -30,6 +30,13 @@ adminGetRooms: builder.query({
     getRoomDetails: builder.query({
       query: (id: string) => `/rooms/${id}`,
     }),
+    createReview: builder.mutation({
+      query: ({ roomId, body }: { roomId: string; body: { rating: number; comment: string } }) => ({
+        url: `/rooms/${roomId}/reviews`,
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -39,4 +46,5 @@ export const {
   useAdminUpdateRoomMutation,
   useAdminDeleteRoomMutation,
   useGetRoomDetailsQuery,
+  useCreateReviewMutation,
 } = roomApi;
