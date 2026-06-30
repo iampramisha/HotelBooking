@@ -38,7 +38,7 @@ address:{
     filter():APIFilters{
 const queryCopy={...this.queryStr}
 // console.log('queryCopy',queryCopy)
-const removeFields=['location','page']
+const removeFields=['location','page','lat','lng','maxDistance','nearMe']
     removeFields.forEach((el)=> delete queryCopy[el])
 //   console.log('querycopy2',queryCopy)
 this.query=this.query.find(queryCopy)

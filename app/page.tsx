@@ -10,8 +10,23 @@ export const metadata = {
 const getRooms = async (searchParams: Record<string, string | string[] | undefined>) => {
   const urlParams = new URLSearchParams();
 
-  if (searchParams.page) urlParams.append("page", searchParams.page as string);
-  if (searchParams.location) urlParams.append("location", searchParams.location as string);
+  const passThrough = [
+    "page",
+    "location",
+    "lat",
+    "lng",
+    "nearMe",
+    "maxDistance",
+    "guestCapacity",
+    "category",
+  ];
+
+  passThrough.forEach((key) => {
+    const value = searchParams[key];
+    if (value && typeof value === "string") {
+      urlParams.append(key, value);
+    }
+  });
 
   const queryString = urlParams.toString();
 

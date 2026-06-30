@@ -4,6 +4,7 @@ import Room, { IRoom } from "../models/room";
 import errorHandler from "@/backend/utils/errorHandler";
 import  catchAsyncErrors  from "@/backend/middlewares/catchAsyncErrors";
 import APIFilters from "../utils/apiFilters";
+import { roundDistance, sortRoomsByDistance } from "../utils/haversine";
 
 // GET all rooms
 export const allRooms = async (req: NextRequest, params?: any) => {
@@ -14,10 +15,61 @@ export const allRooms = async (req: NextRequest, params?: any) => {
   const queryStr: any = {};
   searchParams.forEach((value, key) => (queryStr[key] = value));
 
+  const lat = searchParams.get("lat");
+  const lng = searchParams.get("lng");
+  const maxDistance = Number(searchParams.get("maxDistance")) || 100;
+  const nearMe = searchParams.get("nearMe") === "true" || (!!lat && !!lng);
+
   const roomsCount: number = await Room.countDocuments();
 
   // Apply search & filters
   const apiFilters = new APIFilters(Room, queryStr).search().filter();
+
+  const currentPage = Math.max(1, Number(queryStr.page) || 1);
+
+  if (nearMe && lat && lng) {
+    const userLat = parseFloat(lat);
+    const userLng = parseFloat(lng);
+
+    if (isNaN(userLat) || isNaN(userLng)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid latitude or longitude" },
+        { status: 400 }
+      );
+    }
+
+    const allFilteredRooms: IRoom[] = await apiFilters.query.clone().exec();
+    const sortedByDistance = sortRoomsByDistance(
+      allFilteredRooms,
+      userLat,
+      userLng,
+      maxDistance
+    );
+
+    const filteredRoomsCount = sortedByDistance.length;
+    const skip = resPerPage * (currentPage - 1);
+    const paginated = sortedByDistance.slice(skip, skip + resPerPage);
+
+    const rooms = paginated.map(({ room, distanceKm }) => {
+      const roomObj = room.toObject ? room.toObject() : { ...room };
+      return {
+        ...roomObj,
+        distanceKm: roundDistance(distanceKm),
+      };
+    });
+
+    return NextResponse.json({
+      success: true,
+      filteredRoomsCount,
+      roomsCount,
+      resPerPage,
+      rooms,
+      nearMe: true,
+      algorithm: "Haversine Distance",
+      userLocation: { lat: userLat, lng: userLng },
+      maxDistanceKm: maxDistance,
+    });
+  }
 
   // Count filtered rooms BEFORE pagination
   const filteredRoomsCount: number = await apiFilters.query.clone().countDocuments();
@@ -27,8 +79,6 @@ export const allRooms = async (req: NextRequest, params?: any) => {
 
   // Fetch only paginated results
   const rooms: IRoom[] = await apiFilters.query.clone().exec();
-
-  console.log("current page:", queryStr.page || 1, "rooms fetched:", rooms.length);
 
   return NextResponse.json({
     success: true,

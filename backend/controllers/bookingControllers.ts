@@ -7,6 +7,7 @@ import Moment from "moment";
 import {extendMoment} from "moment-range";
 import errorHandler from "../utils/errorHandler";
 import { Room, User ,booking} from "@/models";
+import { checkBookingAvailability } from "../utils/intervalOverlap";
 
 const moment=extendMoment(Moment)
 export const newBooking=catchAsyncErrors(async(req:NextRequest)=>{
@@ -30,16 +31,31 @@ export const checkRoomBookingAvailability = catchAsyncErrors(async (req: NextReq
   const checkInDate = new Date(searchParams.get("checkInDate") as string);
   const checkOutDate = new Date(searchParams.get("checkOutDate") as string);
 
-  const bookings: IBooking[] = await Booking.find({
-    room: roomId,
-    $and: [
-      { checkInDate: { $lt: checkOutDate } },
-      { checkOutDate: { $gt: checkInDate } },
-    ],
-  });
+  if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
+    return NextResponse.json(
+      { success: false, message: "Invalid check-in or check-out date" },
+      { status: 400 }
+    );
+  }
 
-  const isAvailable: boolean = bookings.length === 0;
-  return NextResponse.json({ isAvailable });
+  if (checkInDate >= checkOutDate) {
+    return NextResponse.json(
+      { success: false, message: "Check-out must be after check-in" },
+      { status: 400 }
+    );
+  }
+
+  const bookings: IBooking[] = await Booking.find({ room: roomId });
+
+  const result = checkBookingAvailability(checkInDate, checkOutDate, bookings);
+
+  return NextResponse.json({
+    success: true,
+    isAvailable: result.isAvailable,
+    overlappingCount: result.overlappingCount,
+    algorithm: result.algorithm,
+    message: result.message,
+  });
 });
 export const getBookDates =catchAsyncErrors(async(req:NextRequest)=>{
     await dbConnect();
