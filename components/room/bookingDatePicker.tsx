@@ -66,49 +66,39 @@ const BookingDatePicker = ({ room }: Props) => {
 
     const days = calculateDaysOfStay(checkInDate, checkOutDate);
     const amount = (room.pricePerNight ?? 0) * days;
-    const transaction_uuid = `booking_${Date.now()}`;
-    const total_amount = amount.toString();
-    const product_code = process.env.NEXT_PUBLIC_ESEWA_MERCHANT_ID!;
-    const esewaUrl = process.env.NEXT_PUBLIC_ESEWA_URL!;
 
     setPaymentInProgress(true);
 
-    const res = await fetch("/api/esewa/signature", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ total_amount, transaction_uuid, product_code }),
-    });
+    try {
+      const res = await fetch("/api/khalti/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // send cookies for JWT auth
+        body: JSON.stringify({
+          amount,
+          roomId: room._id,
+          roomName: room.name,
+          checkInDate: checkInDate.toISOString(),
+          checkOutDate: checkOutDate.toISOString(),
+          daysOfStay: days,
+        }),
+      });
 
-    const signatureData = await res.json();
+      const data = await res.json();
 
-    const fields: Record<string, string> = {
-      amount: total_amount,
-      tax_amount: "0",
-      total_amount,
-      transaction_uuid,
-      product_code,
-      product_service_charge: "0",
-      product_delivery_charge: "0",
-      success_url: `${window.location.origin}/booking/esewa/success?roomId=${room._id}&checkIn=${checkInDate.toISOString()}&checkOut=${checkOutDate.toISOString()}&days=${days}`,
-      failure_url: `${window.location.origin}/booking/esewa/failed`,
-      signed_field_names: signatureData.signedFieldNames,
-      signature: signatureData.signature,
-    };
-
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = esewaUrl;
-
-    Object.entries(fields).forEach(([key, value]) => {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = key;
-      input.value = value;
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(form);
-    form.submit();
+      if (data.success && data.payment_url) {
+        // Redirect to Khalti payment portal
+        window.location.href = data.payment_url;
+      } else {
+        console.error("Khalti initiation failed:", data);
+        alert("Failed to initiate payment. Please try again.");
+        setPaymentInProgress(false);
+      }
+    } catch (err) {
+      console.error("Payment initiation error:", err);
+      alert("An error occurred. Please try again.");
+      setPaymentInProgress(false);
+    }
   };
 
   const excludedDates =
@@ -169,7 +159,7 @@ const BookingDatePicker = ({ room }: Props) => {
           className={`w-full py-3 px-5 rounded-xl font-semibold text-white transition-colors ${
             isPayDisabled
               ? "bg-gray-300 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700 shadow-md hover:shadow-lg"
+              : "bg-purple-600 hover:bg-purple-700 shadow-md hover:shadow-lg"
           }`}
           disabled={isPayDisabled}
           onClick={bookRoom}
@@ -177,10 +167,10 @@ const BookingDatePicker = ({ room }: Props) => {
           {paymentInProgress ? (
             <span className="flex items-center justify-center gap-2">
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Redirecting to eSewa...
+              Redirecting to Khalti...
             </span>
           ) : (
-            "Pay with eSewa"
+            "Pay with Khalti"
           )}
         </button>
 
