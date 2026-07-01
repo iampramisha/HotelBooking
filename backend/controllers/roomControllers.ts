@@ -38,7 +38,8 @@ async function resolveRoomCoordinates(rooms: IRoom[]): Promise<IRoom[]> {
 // GET all rooms
 export const allRooms = async (req: NextRequest, params?: any) => {
   await dbConnect();
-  const resPerPage: number = 4;
+  const isUrlAdmin = req.nextUrl?.pathname?.includes('/api/admin') || req.url.includes('/api/admin');
+  const resPerPage: number = isUrlAdmin ? 8 : 4;
 
   const { searchParams } = new URL(req.url);
   const queryStr: any = {};
@@ -184,7 +185,7 @@ export const createReview = catchAsyncErrors(
     const userId = String(req.user!._id);
     const reviews = room.reviews || [];
     const existingReviewIndex = reviews.findIndex(
-      (review) => String(review.user) === userId
+      (review: { user: any; }) => String(review.user) === userId
     );
 
     if (existingReviewIndex >= 0) {
@@ -269,4 +270,3 @@ export const deleteRoom = async (
     message: "Room deleted successfully",
   });
 };
-

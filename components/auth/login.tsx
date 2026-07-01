@@ -47,7 +47,7 @@ const Login = () => {
             <input
               type="email"
               id="email_field"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
               defaultValue="example@example.com"
               value={email}
               onChange={(e)=> setEmail(e.target.value)}
@@ -65,7 +65,7 @@ const Login = () => {
             <input
               type="password"
               id="password_field"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
               defaultValue="**********"
               value={password}
                  onChange={(e)=> setPassword(e.target.value)}
@@ -74,7 +74,7 @@ const Login = () => {
 
           <a
             href="/password/forgot"
-            className="block text-right text-blue-600 text-sm hover:underline mb-4"
+            className="block text-right text-rose-600 text-sm hover:underline mb-4"
           >
             Forgot Password?
           </a>
@@ -83,15 +83,15 @@ const Login = () => {
             id="login_button"
             type="submit"
        disabled={loading}
-            className="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 transition"
+            className="w-full bg-rose-600 text-white rounded-lg py-2 hover:bg-rose-700 transition"
           >
   {loading ? <ClipLoader size={20} color="#fff" /> : "LOGIN"}
           </button>
 
           <div className="mt-4">
             <a
-              href="/register"
-              className="block text-right text-blue-600 text-sm hover:underline"
+               href="/register"
+              className="block text-right text-rose-600 text-sm hover:underline"
             >
               New User? Register Here
             </a>

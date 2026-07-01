@@ -4,29 +4,25 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import React, { useState, useRef, useEffect } from "react";
-
 const Header = () => {
   const { data } = useSession();
-  console.log('dataa',data)
   const dispatch=useAppDispatch();
   const {user}=useAppSelector((state)=>state.auth)
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const hoverTimeout = useRef<any>(null);
-  console.log("userrroo",user)
-useEffect(()=>{
-if(data){
-  dispatch(setUser(data?.user))
-  dispatch(setIsAuthenticated(true))
-}
-},[data])
+  useEffect(()=>{
+    if(data){
+      dispatch(setUser(data?.user))
+      dispatch(setIsAuthenticated(true))
+    }
+  },[data])
   // Clear timer on unmount
   useEffect(() => {
     return () => {
       if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     };
   }, []);
-
   // Close when clicking outside
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
@@ -37,7 +33,6 @@ if(data){
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
-
   const openNow = () => {
     if (hoverTimeout.current) {
       clearTimeout(hoverTimeout.current);
@@ -45,7 +40,6 @@ if(data){
     }
     setDropdownOpen(true);
   };
-
   const closeWithDelay = () => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     // small delay so mouse can move from button -> menu without flicker
@@ -54,7 +48,6 @@ if(data){
       hoverTimeout.current = null;
     }, 150); // adjust 100–250ms if you want faster/slower close
   };
-
   return (
     <nav className="sticky top-0 py-2 bg-white shadow-md z-50">
       <div className="container mx-auto flex items-center justify-between">
@@ -64,7 +57,6 @@ if(data){
             <img className="cursor-pointer h-10" src="/images/bookit_logo.png" alt="BookIT" />
           </Link>
         </div>
-
         {/* Right Section */}
         <div className="w-1/2 lg:w-1/4 flex items-center justify-end space-x-4">
           {data === undefined ? (
@@ -95,14 +87,12 @@ if(data){
   alt={user?.name || "User"}
   className="rounded-full object-cover w-12 h-12"
 />
-
                 </figure>
                 <span className="font-medium">{user?.name}</span>
                 <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-
               {/* show/hide via state (block vs hidden) — no CSS hover-only */}
               {dropdownOpen && (
                 <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
@@ -132,5 +122,4 @@ if(data){
     </nav>
   );
 };
-
 export default Header;

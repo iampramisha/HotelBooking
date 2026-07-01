@@ -9,6 +9,9 @@ import BookingDatePicker from "./bookingDatePicker";
 import NewReview from "../review/newReview";
 import ListReviews from "../review/listReviews";
 import RoomMap from "./roomMap";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import RecommendedRooms from "./RecommendedRooms";
 
 interface Props {
   data: {
@@ -21,17 +24,25 @@ const RoomDetails = ({ data }: Props) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 py-6 space-y-6">
+      {/* Back Button */}
+      <div>
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-600 hover:text-rose-800 transition-colors">
+          <ArrowLeft size={16} /> Back to Home
+        </Link>
+      </div>
+
       {/* Room Name & Address */}
-      <h2 className="mt-5 text-2xl font-semibold">
-        {room?.name || "Lorem Ipsum Room"}
-      </h2>
+      <div>
+        <h2 className="text-2xl font-semibold">
+          {room?.name || "Lorem Ipsum Room"}
+        </h2>
       <p className="text-gray-600">
         {room?.address || "1234 Lorem Ipsum Street, Lorem City"}
       </p>
 
       {/* Ratings */}
-      <div className="ratings mt-3 mb-4 flex items-center gap-2">
+      <div className="ratings flex items-center gap-2">
         <StarRatings
           rating={room?.ratings || 0}
           starRatedColor="#e61e4d"
@@ -47,7 +58,7 @@ const RoomDetails = ({ data }: Props) => {
       <RoomSlider images={room?.images || []} />
 
       {/* Main content: Description + Booking + Map */}
-      <div className="flex flex-col lg:flex-row gap-6 mb-10 mt-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Column: Description & Features */}
         <div className="flex-1">
           <h3 className="text-xl font-semibold mb-2">Description</h3>
@@ -75,13 +86,15 @@ const RoomDetails = ({ data }: Props) => {
       </div>
 
       {/* Review Section */}
-      <button
-        type="button"
-        onClick={() => setShowReviewModal(true)}
-        className="btn form-btn mt-4 mb-5 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg transition"
-      >
-        Submit Your Review
-      </button>
+      <div>
+        <button
+          type="button"
+          onClick={() => setShowReviewModal(true)}
+          className="btn form-btn px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg transition"
+        >
+          Submit Your Review
+        </button>
+      </div>
 
       <NewReview
         roomId={String(room._id)}
@@ -91,6 +104,10 @@ const RoomDetails = ({ data }: Props) => {
       />
 
       <ListReviews reviews={room.reviews} numOfReviews={room.numOfReviews} />
+
+      <div className="border-t border-gray-100 pt-6">
+        <RecommendedRooms roomId={String(room._id)} />
+      </div>
     </div>
   );
 };

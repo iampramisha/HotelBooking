@@ -57,7 +57,7 @@ const Register = () => {
               value={name}
               onChange={onChange}
               disabled={isLoading}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -72,7 +72,7 @@ const Register = () => {
               value={email}
               onChange={onChange}
               disabled={isLoading}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -87,14 +87,14 @@ const Register = () => {
               value={password}
               onChange={onChange}
               disabled={isLoading}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full py-2 bg-rose-600 text-white font-semibold rounded-lg hover:bg-rose-700 transition disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">

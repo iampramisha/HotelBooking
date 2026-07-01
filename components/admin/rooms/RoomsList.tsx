@@ -4,6 +4,8 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import CustomPagination from "@/components/layout/CustomPagination";
+import { useState } from "react";
+import ConfirmModal from "@/components/layout/ConfirmModal";
 
 const RoomsList = () => {
   const searchParams = useSearchParams();
@@ -11,12 +13,14 @@ const RoomsList = () => {
 
   const { data, isLoading } = useAdminGetRoomsQuery(page);
   const [deleteRoom] = useAdminDeleteRoomMutation();
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this room?")) return;
-    const res = await deleteRoom(id);
+  const handleConfirmDelete = async () => {
+    if (!deleteId) return;
+    const res = await deleteRoom(deleteId);
     if ("data" in res) toast.success("Room deleted");
     else toast.error("Failed to delete");
+    setDeleteId(null);
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -59,7 +63,7 @@ const RoomsList = () => {
                     Edit
                   </Link>
                   <button
-                    onClick={() => handleDelete(room._id)}
+                    onClick={() => setDeleteId(room._id)}
                     className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs"
                   >
                     Delete
@@ -77,6 +81,14 @@ const RoomsList = () => {
           filteredRoomsCount={data?.filteredRoomsCount}
         />
       </div>
+
+      <ConfirmModal 
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Room"
+        message="Are you sure you want to delete this room? This action cannot be undone."
+      />
     </div>
   );
 };
