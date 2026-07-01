@@ -57,7 +57,6 @@ const AdminUsersList = () => {
 
   return (
     <div>
-      {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">All Users</h1>
@@ -67,7 +66,6 @@ const AdminUsersList = () => {
         </div>
       </div>
 
-      {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         {[
           { label: "Total Users", value: users.length, color: "bg-rose-50 text-rose-700" },
@@ -101,7 +99,6 @@ const AdminUsersList = () => {
               <tbody className="divide-y divide-gray-50">
                 {users.map((user: any) => (
                   <tr key={user._id} className="hover:bg-gray-50 transition-colors">
-                    {/* Avatar + Name */}
                     <td className="p-3">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
@@ -117,10 +114,8 @@ const AdminUsersList = () => {
                       </div>
                     </td>
 
-                    {/* Email */}
                     <td className="p-3 text-gray-600">{user.email}</td>
 
-                    {/* Role — inline edit */}
                     <td className="p-3">
                       {editingId === user._id ? (
                         <div className="flex items-center gap-1">
@@ -155,7 +150,6 @@ const AdminUsersList = () => {
                       )}
                     </td>
 
-                    {/* Joined */}
                     <td className="p-3 text-gray-500 text-xs">
                       {new Date(user.createdAt).toLocaleDateString("en-US", {
                         year: "numeric",
@@ -164,7 +158,6 @@ const AdminUsersList = () => {
                       })}
                     </td>
 
-                    {/* Actions */}
                     <td className="p-3">
                       <button
                         onClick={() => setDeleteInfo({ id: user._id, name: user.name })}

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { IRoom } from "@/backend/models/room";
-import StarRatings from "react-star-ratings";
+import dynamic from "next/dynamic";
 import RoomSlider from "./roomSlider";
 import RoomFeatures from "./roomFeatures";
 import BookingDatePicker from "./bookingDatePicker";
@@ -12,6 +12,8 @@ import RoomMap from "./roomMap";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import RecommendedRooms from "./RecommendedRooms";
+
+const StarRatings = dynamic(() => import("react-star-ratings"), { ssr: false });
 
 interface Props {
   data: {
@@ -25,14 +27,12 @@ const RoomDetails = ({ data }: Props) => {
 
   return (
     <div className="container mx-auto px-4 py-6 space-y-6">
-      {/* Back Button */}
       <div>
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-600 hover:text-rose-800 transition-colors">
           <ArrowLeft size={16} /> Back to Home
         </Link>
       </div>
 
-      {/* Room Name & Address */}
       <div>
         <h2 className="text-2xl font-semibold">
           {room?.name || "Lorem Ipsum Room"}
@@ -42,7 +42,6 @@ const RoomDetails = ({ data }: Props) => {
         </p>
       </div>
 
-      {/* Ratings */}
       <div className="ratings flex items-center gap-2">
         <StarRatings
           rating={room?.ratings || 0}
@@ -55,12 +54,9 @@ const RoomDetails = ({ data }: Props) => {
         <span className="no-of-reviews">({room?.numOfReviews || 0})</span>
       </div>
 
-      {/* Room Image Slider */}
       <RoomSlider images={room?.images || []} />
 
-      {/* Main content: Description + Booking + Map */}
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left Column: Description & Features */}
         <div className="flex-1">
           <h3 className="text-xl font-semibold mb-2">Description</h3>
           <p className="text-gray-700">
@@ -68,11 +64,9 @@ const RoomDetails = ({ data }: Props) => {
               "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fermentum nulla sit amet eros iaculis, id venenatis purus tempor."}
           </p>
 
-          {/* Room Features */}
           <RoomFeatures room={room} />
         </div>
 
-        {/* Right Column: Booking Card + Map */}
         <div className="flex-1 lg:max-w-md flex flex-col gap-6">
           <BookingDatePicker room={room} />
 
@@ -86,7 +80,6 @@ const RoomDetails = ({ data }: Props) => {
         </div>
       </div>
 
-      {/* Review Section */}
       <div>
         <button
           type="button"

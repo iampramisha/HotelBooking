@@ -81,7 +81,6 @@ const Search = () => {
           </p>
         </div>
 
-        {/* Near Me — Haversine Algorithm */}
         <div className="mb-6 bg-white rounded-2xl shadow-lg border border-rose-100 p-6">
           <div className="flex items-start gap-3 mb-4">
             <div className="flex-shrink-0 w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
@@ -147,7 +146,6 @@ const Search = () => {
           <div className="flex-grow border-t border-gray-200" />
         </div>
 
-        {/* Text search form — does NOT use GPS or distance */}
         <form
           onSubmit={handleTextSearch}
           className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 space-y-4"

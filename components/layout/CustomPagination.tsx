@@ -10,15 +10,11 @@ interface Props {
 }
 
 const CustomPagination = ({ resPerPage, filteredRoomsCount }: Props) => {
-     console.log("rees",resPerPage)
-    console.log("fiilter",filteredRoomsCount)
-    
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const totalPages = Math.ceil(filteredRoomsCount / resPerPage);
 
-  // Get current page and clamp between 1 and totalPages
   let currentPage = Number(searchParams.get("page"));
   if (isNaN(currentPage) || currentPage < 1) currentPage = 1;
   if (currentPage > totalPages) currentPage = totalPages;
@@ -34,7 +30,6 @@ const CustomPagination = ({ resPerPage, filteredRoomsCount }: Props) => {
 
   if (resPerPage >= filteredRoomsCount) return null;
 
-  // Generate page numbers dynamically (with "..." if needed)
   const pages: (number | "...")[] = [];
   let startPage = Math.max(1, currentPage - 2);
   let endPage = Math.min(totalPages, currentPage + 2);
@@ -49,7 +44,6 @@ const CustomPagination = ({ resPerPage, filteredRoomsCount }: Props) => {
 
   return (
     <div className="flex flex-wrap gap-2 justify-center mt-5">
-      {/* First */}
       <Button
         size="sm"
         disabled={currentPage === 1}
@@ -59,7 +53,6 @@ const CustomPagination = ({ resPerPage, filteredRoomsCount }: Props) => {
         First
       </Button>
 
-      {/* Prev */}
       <Button
         size="sm"
         disabled={currentPage === 1}
@@ -69,7 +62,6 @@ const CustomPagination = ({ resPerPage, filteredRoomsCount }: Props) => {
         Prev
       </Button>
 
-      {/* Page numbers */}
       {pages.map((page, idx) =>
         page === "..." ? (
           <span
@@ -94,7 +86,6 @@ const CustomPagination = ({ resPerPage, filteredRoomsCount }: Props) => {
         )
       )}
 
-      {/* Next */}
       <Button
         size="sm"
         disabled={currentPage === totalPages}
@@ -104,7 +95,6 @@ const CustomPagination = ({ resPerPage, filteredRoomsCount }: Props) => {
         Next
       </Button>
 
-      {/* Last */}
       <Button
         size="sm"
         disabled={currentPage === totalPages}

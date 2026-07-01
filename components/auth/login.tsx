@@ -41,7 +41,6 @@ const Login = () => {
         >
           <h1 className="text-2xl font-semibold mb-6">Login</h1>
 
-          {/* Email */}
           <div className="mb-4">
             <label
               className="block text-gray-700 font-medium mb-2"
@@ -53,13 +52,12 @@ const Login = () => {
               type="email"
               id="email_field"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
-              defaultValue="example@example.com"
+              placeholder="example@example.com"
               value={email}
               onChange={(e)=> setEmail(e.target.value)}
             />
           </div>
 
-          {/* Password */}
           <div className="mb-4">
             <label
               className="block text-gray-700 font-medium mb-2"
@@ -71,13 +69,11 @@ const Login = () => {
               type="password"
               id="password_field"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
-              defaultValue="**********"
+              placeholder="Enter your password"
               value={password}
                  onChange={(e)=> setPassword(e.target.value)}
             />
           </div>
-
-          {/* Forgot Password link removed as requested */}
 
           <button
             id="login_button"

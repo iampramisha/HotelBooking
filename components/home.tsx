@@ -40,7 +40,6 @@ const Home = ({ data }: Props) => {
             )}
           </div>
 
-          {/* Back to search */}
           <Link
             href="/search"
             className="inline-flex items-center gap-1.5 text-sm text-rose-600 hover:text-rose-800 font-medium transition-colors"
@@ -72,7 +71,6 @@ const Home = ({ data }: Props) => {
             </Link>
           </div>
         ) : (
-          /* Auto-responsive grid — fills available space at all breakpoints */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {rooms?.map((room, index) => (
               <RoomItems

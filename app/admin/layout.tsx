@@ -17,9 +17,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <AdminGuard>
       <div className="flex min-h-[calc(100vh-80px)] stretch">
-        {/* ── Sidebar ── */}
         <aside className="w-64 bg-rose-50 border-r border-rose-100 flex flex-col">
-          {/* Brand */}
           <div className="px-6 py-8 border-b border-rose-200">
             <div className="flex flex-col">
               <span className="text-rose-950 text-2xl font-serif tracking-tight mb-1">
@@ -51,7 +49,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               );
             })}
 
-            {/* Divider */}
             <div className="border-t border-rose-200 my-4" />
 
             <Link
@@ -64,7 +61,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </nav>
         </aside>
 
-        {/* ── Main Content ── */}
         <main className="flex-1 p-8 bg-gray-50">{children}</main>
       </div>
     </AdminGuard>

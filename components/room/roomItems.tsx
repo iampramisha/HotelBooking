@@ -2,7 +2,9 @@
 import { RoomWithDistance } from "@/types/room";
 import Image from "next/image";
 import Link from "next/link";
-import StarRatings from "react-star-ratings";
+import dynamic from "next/dynamic";
+
+const StarRatings = dynamic(() => import("react-star-ratings"), { ssr: false });
 
 interface Props {
   room: RoomWithDistance;
@@ -11,9 +13,7 @@ interface Props {
 
 const RoomItems = ({ room, rank }: Props) => {
   return (
-
     <div className="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100 hover:shadow-md transition-shadow duration-200 group">
-      {/* Image */}
       <div className="relative w-full h-48">
         <Image
           src={
@@ -25,14 +25,11 @@ const RoomItems = ({ room, rank }: Props) => {
           className="object-cover"
           fill
         />
-        {/* Rank badge */}
         {rank !== undefined && (
           <span className="absolute top-2 left-2 bg-rose-600 text-white text-xs font-semibold px-2 py-0.5 rounded">
             #{rank} Nearest
           </span>
         )}
-       
-        {/* Distance badge */}
         {room.distanceKm !== undefined && (
           <span className="absolute top-2 right-2 bg-white text-gray-700 text-xs font-medium px-2 py-0.5 rounded shadow-sm flex items-center gap-1">
             <svg className="w-3 h-3 text-rose-500" fill="currentColor" viewBox="0 0 20 20">
@@ -43,7 +40,6 @@ const RoomItems = ({ room, rank }: Props) => {
         )}
       </div>
 
-      {/* Card body */}
       <div className="flex flex-col flex-1 p-4">
         <h5 className="text-base font-semibold text-gray-800 group-hover:text-rose-600 transition-colors line-clamp-1">
           <Link href={`/rooms/${room?._id}`}>{room?.name}</Link>

@@ -50,7 +50,6 @@ const RoomForm = ({ room }: Props) => {
         }
       : defaultState
   );
-  // Image state: existing (from DB) + newly selected previews
   const [existingImages, setExistingImages] = useState<Array<{ public_id: string; url: string }>>(
     room?.images || []
   );
@@ -70,7 +69,6 @@ const RoomForm = ({ room }: Props) => {
       [target.name]: target.type === "checkbox" ? target.checked : target.value,
     }));
   };
-  // Convert selected files to base64 data URIs
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setImageError("");
@@ -89,13 +87,11 @@ const RoomForm = ({ room }: Props) => {
       };
       reader.readAsDataURL(file);
     });
-    // Reset input so same file can be re-selected if needed
     e.target.value = "";
   };
   const removeNewPreview = (idx: number) => {
     setNewImagePreviews((prev) => prev.filter((_, i) => i !== idx));
   };
-  // Delete an existing image (stored in DB + Cloudinary)
   const handleDeleteExisting = async (publicId: string) => {
     if (!room?._id) return;
     const res = await deleteImage({ roomId: room._id, public_id: publicId });
@@ -116,7 +112,6 @@ const RoomForm = ({ room }: Props) => {
       return;
     }
     const savedRoomId = (res.data as any)?.room?._id;
-    // Upload any newly selected images
     if (newImagePreviews.length > 0 && savedRoomId) {
       const uploadRes = await uploadImages({
         roomId: savedRoomId,
@@ -159,7 +154,6 @@ const RoomForm = ({ room }: Props) => {
       <h1 className="text-2xl font-bold text-gray-900">
         {isEditing ? "Edit Room" : "New Room"}
       </h1>
-      {/* Basic fields */}
       {textInput("Room Name", "name")}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
@@ -191,7 +185,6 @@ const RoomForm = ({ room }: Props) => {
           ))}
         </select>
       </div>
-      {/* Amenities */}
       <div>
         <p className="block text-sm font-medium text-gray-700 mb-2">Amenities</p>
         <div className="grid grid-cols-2 gap-3 bg-gray-50 rounded-xl p-4">
@@ -202,13 +195,11 @@ const RoomForm = ({ room }: Props) => {
           {checkInput("Daily Room Cleaning", "isRoomCleaning")}
         </div>
       </div>
-      {/* ── Image Upload Section ── */}
       <div>
         <p className="block text-sm font-medium text-gray-700 mb-2">
           Room Images
           <span className="text-xs text-gray-400 ml-1">(max 10 total)</span>
         </p>
-        {/* Existing images grid */}
         {existingImages.length > 0 && (
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3">
             {existingImages.map((img) => (
@@ -231,7 +222,6 @@ const RoomForm = ({ room }: Props) => {
             ))}
           </div>
         )}
-        {/* New image previews */}
         {newImagePreviews.length > 0 && (
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3">
             {newImagePreviews.map((src, idx) => (
@@ -256,7 +246,6 @@ const RoomForm = ({ room }: Props) => {
             ))}
           </div>
         )}
-        {/* File picker drop zone */}
         <div
           onClick={() => fileInputRef.current?.click()}
           className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-rose-400 hover:bg-rose-50 transition-colors"

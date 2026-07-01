@@ -41,7 +41,6 @@ const AdminBookingsList = () => {
 
   return (
     <div>
-      {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">All Reservations</h1>
@@ -50,7 +49,6 @@ const AdminBookingsList = () => {
           </p>
         </div>
 
-        {/* Revenue summary */}
         <div className="bg-rose-600 text-white rounded-xl px-5 py-3">
           <p className="text-xs font-medium opacity-80">Total Revenue</p>
           <p className="text-2xl font-bold">
@@ -59,7 +57,6 @@ const AdminBookingsList = () => {
         </div>
       </div>
 
-      {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         {[
           { label: "Total Bookings", value: bookings.length, color: "bg-rose-50 text-rose-700" },

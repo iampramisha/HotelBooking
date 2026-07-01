@@ -2,7 +2,10 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import StarRatings from "react-star-ratings";
+import dynamic from "next/dynamic";
+
+const StarRatings = dynamic(() => import("react-star-ratings"), { ssr: false });
+
 interface Recommendation {
   id: string;
   name: string;
@@ -46,7 +49,6 @@ const RecommendedRooms = ({ roomId }: Props) => {
         <div className="h-6 w-40 bg-gray-100 rounded animate-pulse mb-5" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-          
             <div key={i} className="bg-white rounded-xl border border-gray-100 overflow-hidden animate-pulse">
               <div className="h-40 bg-gray-100" />
               <div className="p-4 space-y-2">
@@ -72,7 +74,6 @@ const RecommendedRooms = ({ roomId }: Props) => {
             key={room.id}
             className="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100 hover:shadow-md transition-shadow duration-200 group"
           >
-            {/* Image */}
             <div className="relative w-full h-40">
               <Image
                 src={room.imageUrl || "/images/default_room_image.jpg"}
@@ -80,31 +81,29 @@ const RecommendedRooms = ({ roomId }: Props) => {
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
-           
               <div className="absolute top-2 right-2">
                 <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-white/90 text-gray-700 shadow-sm">
                   {room.category}
                 </span>
               </div>
             </div>
-     
-            {/* Body */}
+
             <div className="flex flex-col flex-1 p-4">
               <h5 className="text-sm font-semibold text-gray-800 group-hover:text-rose-600 transition-colors line-clamp-1">
                 <Link href={`/rooms/${room.id}`}>{room.name}</Link>
               </h5>
-     
+
               {(room.city || room.address) && (
                 <p className="text-gray-500 text-xs mt-0.5 line-clamp-1">
                   {room.city || room.address}
                 </p>
               )}
-                 
+
               <p className="text-rose-600 font-bold mt-2 text-sm">
                 Rs. {room.pricePerNight}{" "}
                 <span className="font-normal text-gray-400 text-xs">/ night</span>
               </p>
-      
+
               {room.ratings !== undefined && (
                 <div className="flex items-center mt-1 gap-1">
                   <StarRatings
@@ -118,8 +117,7 @@ const RecommendedRooms = ({ roomId }: Props) => {
                   <span className="text-gray-400 text-xs">({room.numOfReviews ?? 0})</span>
                 </div>
               )}
-               
-              {/* Match bar */}
+
               <div className="mt-3">
                 <div className="flex justify-between text-xs text-gray-400 mb-1">
                   <span>Similarity</span>
@@ -139,7 +137,7 @@ const RecommendedRooms = ({ roomId }: Props) => {
                 View &amp; Book
               </Link>
             </div>
-    
+
           </div>
         ))}</div>
     </section>

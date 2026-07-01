@@ -1,12 +1,11 @@
 import HomeComponent from "@/components/home";
 import Error from "./error";
 import 'leaflet/dist/leaflet.css';
-import 'leaflet/dist/leaflet.css';
+
 export const metadata = {
   title: "HomePage - BookIT",
 };
 
-// Fetch rooms based on searchParams object
 const getRooms = async (searchParams: Record<string, string | string[] | undefined>) => {
   const urlParams = new URLSearchParams();
 
@@ -42,7 +41,6 @@ export default async function HomePage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  // Await searchParams in case it's a promise
   const params = await searchParams;
 
   const data = await getRooms(params);

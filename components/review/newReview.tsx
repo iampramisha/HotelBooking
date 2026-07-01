@@ -5,8 +5,10 @@ import { useCreateReviewMutation } from "@/redux/api/roomApi";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import StarRatings from "react-star-ratings";
+import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
+
+const StarRatings = dynamic(() => import("react-star-ratings"), { ssr: false });
 
 interface Props {
   roomId: string;

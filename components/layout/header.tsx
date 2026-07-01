@@ -17,13 +17,11 @@ const Header = () => {
       dispatch(setIsAuthenticated(true))
     }
   },[data])
-  // Clear timer on unmount
   useEffect(() => {
     return () => {
       if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     };
   }, []);
-  // Close when clicking outside
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
@@ -42,22 +40,19 @@ const Header = () => {
   };
   const closeWithDelay = () => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
-    // small delay so mouse can move from button -> menu without flicker
     hoverTimeout.current = setTimeout(() => {
       setDropdownOpen(false);
       hoverTimeout.current = null;
-    }, 150); // adjust 100–250ms if you want faster/slower close
+    }, 150);
   };
   return (
     <nav className="sticky top-0 py-2 bg-white shadow-md z-50">
       <div className="container mx-auto flex items-center justify-between">
-        {/* Logo */}
         <div className="w-1/2 lg:w-1/4">
           <Link href="/" className="inline-block">
             <img className="cursor-pointer h-10" src="/images/bookit_logo.png" alt="BookIT" />
           </Link>
         </div>
-        {/* Right Section */}
         <div className="w-1/2 lg:w-1/4 flex items-center justify-end space-x-4">
           {data === undefined ? (
             <div className="w-12 h-12 rounded-full bg-gray-200 animate-pulse"></div>
@@ -69,7 +64,6 @@ const Header = () => {
               Login
             </Link>
           ) : (
-            // *** wrapper handles hover enter/leave for both button and menu ***
             <div
               ref={wrapperRef}
               className="relative inline-block text-left"
@@ -93,7 +87,6 @@ const Header = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {/* show/hide via state (block vs hidden) — no CSS hover-only */}
               {dropdownOpen && (
                 <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   {user?.role === "admin" && (

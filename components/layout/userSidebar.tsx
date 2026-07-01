@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 
 const UserSidebar = () => {
-  const pathname = usePathname(); // get current URL path
+  const pathname = usePathname();
 
   const menuItem = [
     { name: "Update Profile", url: "/me/update", icon: "fas fa-user" },
@@ -25,8 +25,8 @@ const UserSidebar = () => {
             className={`flex items-center px-3 py-2 mb-2 rounded font-bold transition
               ${
                 isActive
-                  ? "bg-gray-100 text-[#e61e4d]" // active state
-                  : "text-gray-800 hover:bg-gray-200" // inactive state
+                  ? "bg-gray-100 text-[#e61e4d]"
+                  : "text-gray-800 hover:bg-gray-200"
               }`}
           >
             <i className={`${item.icon} fa-fw pe-2`}></i>

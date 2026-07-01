@@ -31,12 +31,9 @@ const FeatureItem = ({
   return (
     <div className="room-feature flex items-center gap-2">
       <div className="relative flex flex-col items-center">
-        {/* Cross above icon when false */}
         {!isAvailable && (
           <X className="w-4 h-4 text-red-600 mb-[-6px]" />
         )}
-
-        {/* Main icon */}
         <Icon
           className={`w-6 h-6 ${isAvailable ? "text-green-500" : "text-red-500"}`}
         />
@@ -51,21 +48,16 @@ const RoomFeatures = ({ room }: Props) => {
     <div className="features mt-5">
       <h3 className="mb-4 text-lg font-semibold">Features:</h3>
       <div className="flex flex-col gap-3">
-        {/* Guests */}
         <FeatureItem
           icon={Users}
           label={`${room?.guestCapacity} Guests`}
           showAlways
         />
-
-        {/* Beds */}
         <FeatureItem
           icon={Bed}
           label={`${room?.numOfBeds} Beds`}
           showAlways
         />
-
-        {/* Conditional features */}
         <FeatureItem icon={Wifi} label="Internet" available={room?.isInternet} />
         <FeatureItem
           icon={Wind}

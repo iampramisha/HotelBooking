@@ -1,4 +1,3 @@
-// components/RoomMap.tsx
 "use client";
 
 import React from "react";
@@ -10,7 +9,6 @@ interface RoomMapProps {
 }
 
 const RoomMap: React.FC<RoomMapProps> = ({ latitude, longitude, address }) => {
-  // Small bounding box around the location for proper zoom
   const delta = 0.01;
   const bbox = `${longitude - delta},${latitude - delta},${longitude + delta},${latitude + delta}`;
 
