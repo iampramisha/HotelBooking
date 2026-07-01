@@ -23,6 +23,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="px-6 py-8 border-b border-rose-200">
             <div className="flex flex-col">
               <span className="text-rose-950 text-2xl font-serif tracking-tight mb-1">
+
+
                 ADMIN
               </span>
               <span className="text-rose-950 text-2xl font-serif tracking-tight">
