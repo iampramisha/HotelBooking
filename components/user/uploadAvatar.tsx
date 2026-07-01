@@ -2,6 +2,7 @@
 import { useLazyUpdateSessionQuery, useUpdateSessionQuery, useUploadAvatarMutation } from "@/redux/api/userApi";
 import { setUser } from "@/redux/features/userSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -21,27 +22,14 @@ const UploadAvatar = () => {
     const [avatar,setAvatar]=useState("");
     const [avatarPreview,setAvatarPreview]=useState('/images/default_avatar.jpg');
 const {user}=useAppSelector((state)=>state.auth);
-const [uploadAvatar,{isLoading,isSuccess,error}]=useUploadAvatarMutation();
-const [updateSession,{data}]=useLazyUpdateSessionQuery();
-useEffect(() => {
-  if (data) {
-    dispatch(setUser(data?.user));
-  }
-}, [data, dispatch]);
+const [uploadAvatar,{isLoading}]=useUploadAvatarMutation();
+const { update } = useSession();
 
 useEffect(() => {
   if (user?.avatar) {
     setAvatarPreview(user?.avatar?.url);
   }
-  if (error && "data" in error) {
-    toast.error((error as any)?.data?.errMessage);
-  }
-  if (isSuccess) {
-    updateSession({});
-    toast.success("Profile Avatar uploaded");
-    router.refresh();
-  }
-}, [user, error, isSuccess, updateSession, router]);
+}, [user]);
 
 const onChange:React.ChangeEventHandler<HTMLInputElement>=(e)=>{
     const files=Array.from(e.target.files || []);
@@ -67,15 +55,20 @@ setAvatarPreview(reader.result as string)
     };
     reader.readAsDataURL(files[0])
 }
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userData = { avatar };
-    uploadAvatar(userData);
+    try {
+      await uploadAvatar(userData).unwrap();
+      update();
+      toast.success("Profile Avatar uploaded");
+      router.refresh();
+    } catch (err: any) {
+      toast.error(err?.data?.errMessage || "Upload failed");
+    }
   };
 
-  if (data) {
-    dispatch(setUser(data?.user));
-  }
+
 
   return (
     <div className=" ">

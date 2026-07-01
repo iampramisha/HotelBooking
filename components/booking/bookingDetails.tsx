@@ -73,7 +73,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
               </tr>
               <tr className="border-b">
                 <th className="px-4 py-2 font-medium">Amount Paid:</th>
-                <td className="px-4 py-2">${booking.amountPaid.toFixed(2)}</td>
+                <td className="px-4 py-2">Rs. {booking.amountPaid.toFixed(2)}</td>
               </tr>
             </tbody>
           </table>
@@ -149,7 +149,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
                 </Link>
               </div>
               <div className="w-24 text-right">
-                ${booking.room?.pricePerNight.toFixed(2)}
+                Rs. {booking.room?.pricePerNight.toFixed(2)}
               </div>
               <div className="w-24 text-right">
                 {booking.daysOfStay} Day(s)

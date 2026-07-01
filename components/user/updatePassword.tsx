@@ -2,27 +2,28 @@
 import { updatePassword } from "@/backend/controllers/authControllers";
 import { useUpdatePasswordMutation, useUpdateProfileMutation } from "@/redux/api/userApi";
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const UpdatePassword = () => {
     const [password,setPassword]=useState('' )
     const[oldPassword,setOldPassword]=useState("")
-    const [UpdatePassword,{isLoading,error,isSuccess}]=useUpdatePasswordMutation();
+    const [UpdatePassword,{isLoading}]=useUpdatePasswordMutation();
     const router=useRouter();
- useEffect(() => {
-    if (error && "data" in error) {
-      toast.error((error as any)?.data?.errMessage);
-    }
-    if(isSuccess){
-        toast.success('Password changed!')
-router
-    }
-})
-    const submitHandler=(e:React.FormEvent<HTMLFormElement>)=>{
+    const { update } = useSession();
+
+    const submitHandler=async(e:React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
         const passwords={password,oldPassword};
-        UpdatePassword(passwords)
+        try {
+            await UpdatePassword(passwords).unwrap();
+            update();
+            toast.success('Password changed!');
+            router.refresh();
+        } catch (err: any) {
+            toast.error(err?.data?.errMessage || "Password update failed");
+        }
     }
     
   return (

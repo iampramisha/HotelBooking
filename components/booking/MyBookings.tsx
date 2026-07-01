@@ -64,7 +64,7 @@ const MyBookings = ({ data }: Props) => {
                 {new Date(booking.checkOutDate).toLocaleString("en-US")}
               </TableCell>
               <TableCell className="border-r border-red-200">
-                ${booking.amountPaid}
+                Rs. {booking.amountPaid}
               </TableCell>
               <TableCell className="flex gap-2">
                 <Button

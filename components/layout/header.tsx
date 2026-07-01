@@ -108,7 +108,7 @@ const Header = () => {
                     Profile
                   </Link>
                   <button
-                    onClick={() => signOut()}
+                    onClick={() => signOut({ callbackUrl: "/login" })}
                     className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
                   >
                     Logout

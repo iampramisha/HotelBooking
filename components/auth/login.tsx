@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import ClipLoader from "react-spinners/ClipLoader";
 import toast, { Toaster } from "react-hot-toast";
@@ -22,7 +22,12 @@ const Login = () => {
         if(result?.error){
             toast.error(result.error)
         }else{
-            router.replace('/')
+            const session = await getSession();
+            if (session?.user?.role === "admin") {
+                router.replace('/admin/rooms');
+            } else {
+                router.replace('/');
+            }
         }
     }
   return (
@@ -72,12 +77,7 @@ const Login = () => {
             />
           </div>
 
-          <a
-            href="/password/forgot"
-            className="block text-right text-rose-600 text-sm hover:underline mb-4"
-          >
-            Forgot Password?
-          </a>
+          {/* Forgot Password link removed as requested */}
 
           <button
             id="login_button"

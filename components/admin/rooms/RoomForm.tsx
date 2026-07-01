@@ -172,7 +172,7 @@ const RoomForm = ({ room }: Props) => {
           className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400 disabled:bg-gray-100 text-sm resize-none"
         />
       </div>
-      {textInput("Price Per Night ($)", "pricePerNight", "number")}
+      {textInput("Price Per Night (Rs.)", "pricePerNight", "number")}
       {textInput("Address", "address")}
       <div className="grid grid-cols-2 gap-4">
         {textInput("Guest Capacity", "guestCapacity", "number")}

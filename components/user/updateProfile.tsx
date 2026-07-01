@@ -6,6 +6,7 @@ import {
 } from "@/redux/api/userApi";
 import { setUser } from "@/redux/features/userSlice";
 import { useAppSelector } from "@/redux/hooks";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -15,9 +16,9 @@ const UpdateProfile = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const { user: currentUser } = useAppSelector((state) => state.auth);
-  const [updateProfile, { isLoading, isSuccess, error }] =
+  const [updateProfile, { isLoading }] =
     useUpdateProfileMutation();
-  const [updateSession, { data }] = useLazyUpdateSessionQuery();
+  const { update } = useSession();
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -26,27 +27,22 @@ const UpdateProfile = () => {
       setName(currentUser?.name);
       setEmail(currentUser?.email);
     }
-    if (error && "data" in error) {
-      toast.error((error as any)?.data?.errMessage);
-    }
-    if (isSuccess) {
-      // @ts-ignore
+  }, [currentUser]);
 
-      updateSession();
-        toast.success("Profile Updated");
-      router.refresh();
-    }
-  }, [currentUser, error, isSuccess]);
-
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userData = { name, email };
-    updateProfile(userData);
+    try {
+      await updateProfile(userData).unwrap();
+      update();
+      toast.success("Profile Updated");
+      router.refresh();
+    } catch (err: any) {
+      toast.error(err?.data?.errMessage || "Update failed");
+    }
   };
 
-  if (data) {
-    dispatch(setUser(data?.user));
-  }
+
 
   return (
     <form

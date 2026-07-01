@@ -142,14 +142,14 @@ const handleDownload = () => {
                 <tbody>
                   <tr className="border-b border-gray-300">
                     <td className="p-2">{booking?.room?.name || "Room Name"}</td>
-                    <td className="p-2">${booking?.amountPaid?.toFixed(2) || "500.00"}</td>
+                    <td className="p-2">Rs. {booking?.amountPaid?.toFixed(2) || "500.00"}</td>
                     <td className="p-2">{booking?.checkInDate || "Sep 1, 2023"}</td>
                     <td className="p-2">{booking?.checkOutDate || "Sep 5, 2023"}</td>
                     <td className="p-2">{booking?.daysOfStay || 4}</td>
                   </tr>
                   <tr>
                     <td colSpan={4} className="p-2 font-bold text-right">GRAND TOTAL</td>
-                    <td className="p-2 font-bold">${booking?.amountPaid?.toFixed(2) || "500.00"}</td>
+                    <td className="p-2 font-bold">Rs. {booking?.amountPaid?.toFixed(2) || "500.00"}</td>
                   </tr>
                 </tbody>
               </table>

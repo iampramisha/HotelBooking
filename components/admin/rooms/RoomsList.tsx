@@ -54,11 +54,11 @@ const RoomsList = () => {
                 <td className="p-3 text-xs text-gray-500">{room._id}</td>
                 <td className="p-3">{room.name}</td>
                 <td className="p-3">{room.category}</td>
-                <td className="p-3">${room.pricePerNight}</td>
+                <td className="p-3">Rs. {room.pricePerNight}</td>
                 <td className="p-3 flex gap-2">
                   <Link
                     href={`/admin/rooms/${room._id}/edit`}
-                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
+                    className="px-3 py-1 bg-emerald-700/20 text-emerald-800 font-medium rounded hover:bg-emerald-700/30 transition-colors text-xs"
                   >
                     Edit
                   </Link>
