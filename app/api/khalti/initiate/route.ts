@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
           customer_info: {
             name: user.name || "Guest User",
             email: user.email || "guest@example.com",
-            phone: user.phone || "9800000000",
+            phone: (user as any).phone || "9800000000",
           },
         }),
       }

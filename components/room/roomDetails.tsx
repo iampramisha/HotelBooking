@@ -37,9 +37,10 @@ const RoomDetails = ({ data }: Props) => {
         <h2 className="text-2xl font-semibold">
           {room?.name || "Lorem Ipsum Room"}
         </h2>
-      <p className="text-gray-600">
-        {room?.address || "1234 Lorem Ipsum Street, Lorem City"}
-      </p>
+        <p className="text-gray-600">
+          {room?.address || "1234 Lorem Ipsum Street, Lorem City"}
+        </p>
+      </div>
 
       {/* Ratings */}
       <div className="ratings flex items-center gap-2">
@@ -103,7 +104,7 @@ const RoomDetails = ({ data }: Props) => {
         onSuccess={(updatedRoom) => setRoom(updatedRoom)}
       />
 
-      <ListReviews reviews={room.reviews} numOfReviews={room.numOfReviews} />
+      <ListReviews reviews={room.reviews as any} numOfReviews={room.numOfReviews} />
 
       <div className="border-t border-gray-100 pt-6">
         <RecommendedRooms roomId={String(room._id)} />

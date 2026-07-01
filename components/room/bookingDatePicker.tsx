@@ -105,6 +105,22 @@ const BookingDatePicker = ({ room }: Props) => {
           <span className="font-semibold text-rose-600">Rs. {totalAmount}</span>
         </p>
       )}
+
+      <div className="mt-4">
+        <DatePicker
+          className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400"
+          selected={checkInDate}
+          onChange={onChange}
+          startDate={checkInDate}
+          endDate={checkOutDate}
+          selectsRange
+          inline
+          excludeDates={excludedDates}
+          minDate={new Date()}
+        />
+      </div>
+
+      <AvailabilityStatus
         isLoading={isFetching}
         isAvailable={isAvailable}
         overlappingCount={availabilityMeta.overlappingCount}
@@ -150,4 +166,4 @@ const BookingDatePicker = ({ room }: Props) => {
     </div>
   );
 };
-export default BookingDatePicker;
+export default BookingDatePicker;

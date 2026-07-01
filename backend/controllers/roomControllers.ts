@@ -253,11 +253,12 @@ export const updateRoom = async (
 
 export const deleteRoom = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   await dbConnect(); // Ensure DB is connected
 
-  const room = await Room.findById(params.id);
+  const { id } = await params;
+  const room = await Room.findById(id);
   if (!room) {
    throw new errorHandler('Room not found', 404);
   }

@@ -40,7 +40,7 @@ const getRooms = async (searchParams: Record<string, string | string[] | undefin
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   // Await searchParams in case it's a promise
   const params = await searchParams;

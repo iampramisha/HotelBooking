@@ -3,6 +3,12 @@ import { RoomWithDistance } from "@/types/room";
 import Image from "next/image";
 import Link from "next/link";
 import StarRatings from "react-star-ratings";
+
+interface Props {
+  room: RoomWithDistance;
+  rank?: number;
+}
+
 const RoomItems = ({ room, rank }: Props) => {
   return (
 

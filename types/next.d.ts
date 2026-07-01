@@ -18,3 +18,35 @@ declare module "@reduxjs/toolkit/query" {
     };
   }
 }
+
+// Extend next-auth Session and JWT to include IUser fields
+declare module "next-auth" {
+  interface Session {
+    user?: {
+      _id?: any;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string;
+      avatar?: { public_id: string; url: string };
+    };
+  }
+
+  interface User {
+    _id?: any;
+    role?: string;
+    avatar?: { public_id: string; url: string };
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    user?: {
+      _id?: any;
+      name?: string | null;
+      email?: string | null;
+      role?: string;
+      avatar?: { public_id: string; url: string };
+    };
+  }
+}

@@ -49,7 +49,7 @@ export async function DELETE(req: NextRequest) {
   // Delete from Cloudinary
   await delete_file(public_id);
   // Remove from room images array
-  room.images = (room.images || []).filter((img) => img.public_id !== public_id);
+  room.images = (room.images || []).filter((img: { public_id: string; url: string }) => img.public_id !== public_id);
   await room.save();
   return NextResponse.json({ success: true, images: room.images });
 }

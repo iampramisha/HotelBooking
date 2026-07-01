@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const authResult = await authorizeRoles(request, "admin");
   if (authResult) return authResult;
@@ -13,7 +13,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const authResult = await authorizeRoles(request, "admin");
   if (authResult) return authResult;

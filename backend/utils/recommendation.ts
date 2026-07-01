@@ -58,7 +58,7 @@ export function buildFeatureVector(
   },
   maxPrice: number,
   maxCapacity: number
-🙁 number[] {
+): number[] {
   return [
     room.isInternet ? 1 : 0,
     room.isBreakfast ? 1 : 0,
@@ -140,7 +140,7 @@ export function getRecommendations(
     images?: Array<{ url: string }>;
   }>,
   limit = 4
-🙁 RecommendationResult[] {
+): RecommendationResult[] {
   // Exclude the target room itself from candidates
   const candidates = allRooms.filter(
     (r) => String(r._id) !== String(targetRoom._id)
