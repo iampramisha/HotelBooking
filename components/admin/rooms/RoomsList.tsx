@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import CustomPagination from "@/components/layout/CustomPagination";
 import { useState } from "react";
 import ConfirmModal from "@/components/layout/ConfirmModal";
+import Loader from "@/components/layout/loader";
 
 const RoomsList = () => {
   const searchParams = useSearchParams();
@@ -23,7 +24,13 @@ const RoomsList = () => {
     setDeleteId(null);
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div>
