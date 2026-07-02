@@ -142,7 +142,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
               </div>
               <div className="flex-1">
                 <Link
-                  href={`/room/${booking.room?._id}`}
+                  href={`/rooms/${booking.room?._id}`}
                   className="text-blue-600 hover:underline"
                 >
                   {booking.room?.name}

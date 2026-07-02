@@ -21,12 +21,18 @@ const Home = ({ data }: Props) => {
   const searchParams = useSearchParams();
   const location = searchParams.get("location");
   const nearMe = searchParams.get("nearMe") === "true" || data?.nearMe;
+  const checkInDate = searchParams.get("checkInDate");
+  const checkOutDate = searchParams.get("checkOutDate");
+  const isDateSearch = !!(checkInDate && checkOutDate);
+
   const { rooms, resPerPage, filteredRoomsCount, maxDistanceKm } = data;
-  const heading = nearMe
-    ? `${filteredRoomsCount} hotel${filteredRoomsCount !== 1 ? "s" : ""} near you`
-    : location
-      ? `${filteredRoomsCount} result${filteredRoomsCount !== 1 ? "s" : ""} in "${location}"`
-      : "All Rooms";
+  const heading = filteredRoomsCount === 0 && isDateSearch
+    ? "No Available Rooms"
+    : nearMe
+      ? `${filteredRoomsCount} hotel${filteredRoomsCount !== 1 ? "s" : ""} near you`
+      : location
+        ? `${filteredRoomsCount} result${filteredRoomsCount !== 1 ? "s" : ""} in "${location}"`
+        : "All Rooms";
   return (
     <div className="px-4 md:px-8 lg:px-16 pb-12">
       <section id="rooms" className="mt-5">
@@ -51,17 +57,23 @@ const Home = ({ data }: Props) => {
           </Link>
         </div>
         {rooms?.length === 0 ? (
-                  <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
+          <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
             <svg className="w-12 h-12 text-gray-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
             <p className="text-gray-700 font-semibold text-lg">No rooms found</p>
-            <p className="text-gray-400 text-sm mt-1">
-              {nearMe
-                ? "No hotels found within range. Try increasing the distance."
-                : location
-                  ? `We couldn't find any rooms in "${location}". Check the spelling or try a nearby city.`
-                  : "No rooms are available at the moment."}
+            <p className="text-gray-400 text-sm mt-1 px-4 max-w-md mx-auto">
+              {isDateSearch
+                ? nearMe
+                  ? "We couldn't find any available rooms near you for your selected stay dates. Try choosing different dates or increasing the search distance."
+                  : location
+                    ? `We couldn't find any available rooms in "${location}" for your selected stay dates. Try choosing a different date range or checking another city.`
+                    : "We couldn't find any available rooms for the selected stay dates. Please try selecting a different date range."
+                : nearMe
+                  ? "No hotels found within range. Try increasing the distance."
+                  : location
+                    ? `We couldn't find any rooms in "${location}". Check the spelling or try a nearby city.`
+                    : "No rooms are available at the moment."}
             </p>
             <Link
               href="/search"
