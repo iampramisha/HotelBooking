@@ -28,7 +28,9 @@ export async function POST(req: NextRequest) {
     }
 
     const khaltiSecretKey = process.env.KHALTI_SECRET_KEY!;
-    const siteUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+    const host = req.headers.get("host") || "localhost:3000";
+    const protocol = req.headers.get("x-forwarded-proto") || "http";
+    const siteUrl = `${protocol}://${host}`;
 
     // 3️⃣ Build the return_url with booking context as query params
     const returnUrl = `${siteUrl}/booking/khalti/success?roomId=${roomId}&checkIn=${encodeURIComponent(
