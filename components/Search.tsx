@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Search = () => {
   const [location, setLocation] = useState("Kathmandu");
@@ -10,6 +12,8 @@ const Search = () => {
   const [maxDistance, setMaxDistance] = useState("50");
   const [geoLoading, setGeoLoading] = useState(false);
   const [geoError, setGeoError] = useState("");
+  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
+  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
   const router = useRouter();
 
   const buildQuery = (options: { nearMe?: boolean; lat?: string; lng?: string } = {}) => {
@@ -26,6 +30,9 @@ const Search = () => {
 
     if (guests) params.set("guestCapacity", guests);
     if (category) params.set("category", category);
+
+    if (checkInDate) params.set("checkInDate", checkInDate.toISOString());
+    if (checkOutDate) params.set("checkOutDate", checkOutDate.toISOString());
 
     return params.toString();
   };
@@ -79,6 +86,40 @@ const Search = () => {
           <p className="text-gray-600 mt-2">
             Search by city or discover hotels nearest to you using GPS
           </p>
+        </div>
+
+        {/* Date Picker Section */}
+        <div className="mb-6 bg-white rounded-2xl shadow-lg border border-rose-100 p-6">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
+              <svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Select Stay Dates (Optional)</h2>
+              <p className="text-sm text-gray-500 mt-0.5">
+                Find hotels and rooms available for your selected check-in and check-out dates.
+              </p>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <DatePicker
+              selected={checkInDate}
+              onChange={(dates: [Date | null, Date | null]) => {
+                const [start, end] = dates;
+                setCheckInDate(start);
+                setCheckOutDate(end);
+              }}
+              startDate={checkInDate}
+              endDate={checkOutDate}
+              selectsRange
+              minDate={new Date()}
+              placeholderText="Click to select stay dates (Check-In - Check-Out)"
+              className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-rose-500 focus:outline-none cursor-pointer"
+            />
+          </div>
         </div>
 
         <div className="mb-6 bg-white rounded-2xl shadow-lg border border-rose-100 p-6">

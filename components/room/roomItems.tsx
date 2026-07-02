@@ -2,6 +2,7 @@
 import { RoomWithDistance } from "@/types/room";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 
 const StarRatings = dynamic(() => import("react-star-ratings"), { ssr: false });
@@ -12,6 +13,17 @@ interface Props {
 }
 
 const RoomItems = ({ room, rank }: Props) => {
+  const searchParams = useSearchParams();
+  const checkInDate = searchParams.get("checkInDate");
+  const checkOutDate = searchParams.get("checkOutDate");
+
+  const queryParams = new URLSearchParams();
+  if (checkInDate) queryParams.set("checkInDate", checkInDate);
+  if (checkOutDate) queryParams.set("checkOutDate", checkOutDate);
+
+  const queryString = queryParams.toString();
+  const detailsUrl = `/rooms/${room?._id}${queryString ? `?${queryString}` : ""}`;
+
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100 hover:shadow-md transition-shadow duration-200 group">
       <div className="relative w-full h-48">
@@ -42,7 +54,7 @@ const RoomItems = ({ room, rank }: Props) => {
 
       <div className="flex flex-col flex-1 p-4">
         <h5 className="text-base font-semibold text-gray-800 group-hover:text-rose-600 transition-colors line-clamp-1">
-          <Link href={`/rooms/${room?._id}`}>{room?.name}</Link>
+          <Link href={detailsUrl}>{room?.name}</Link>
         </h5>
         
         {(room?.location?.city || room?.address) && (
@@ -67,7 +79,7 @@ const RoomItems = ({ room, rank }: Props) => {
           <span className="text-gray-400 text-xs">({room?.numOfReviews})</span>
         </div>
         <Link
-          href={`/rooms/${room?._id}`}
+          href={detailsUrl}
           className="mt-auto mt-3 block bg-rose-600 hover:bg-rose-700 text-white font-medium text-center py-2 rounded-lg transition-colors text-sm"
         >
           View &amp; Book

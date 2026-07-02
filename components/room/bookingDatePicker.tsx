@@ -9,12 +9,21 @@ import AvailabilityStatus from "@/components/room/AvailabilityStatus";
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useSearchParams } from "next/navigation";
 interface Props {
   room: IRoom;
 }
 const BookingDatePicker = ({ room }: Props) => {
-  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
-  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
+  const searchParams = useSearchParams();
+  const checkInParam = searchParams.get("checkInDate");
+  const checkOutParam = searchParams.get("checkOutDate");
+
+  const [checkInDate, setCheckInDate] = useState<Date | null>(() => {
+    return checkInParam ? new Date(checkInParam) : null;
+  });
+  const [checkOutDate, setCheckOutDate] = useState<Date | null>(() => {
+    return checkOutParam ? new Date(checkOutParam) : null;
+  });
   const [daysOfStay, setDaysOfStay] = useState(0);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [availabilityMeta, setAvailabilityMeta] = useState<{
@@ -26,6 +35,19 @@ const BookingDatePicker = ({ room }: Props) => {
   const [checkBookingAvailability, { data, isFetching }] =
     useLazyCheckBookingAvailabilityQuery();
   const { data: bookedDates } = useGetBookedDatesQuery({ roomId: room._id });
+
+  useEffect(() => {
+    if (checkInDate && checkOutDate) {
+      const days = calculateDaysOfStay(checkInDate, checkOutDate);
+      setDaysOfStay(days);
+      checkBookingAvailability({
+        id: room._id,
+        checkInDate: checkInDate.toISOString(),
+        checkOutDate: checkOutDate.toISOString(),
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (data !== undefined) {
       setIsAvailable(data.isAvailable);

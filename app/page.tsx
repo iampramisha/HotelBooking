@@ -18,6 +18,8 @@ const getRooms = async (searchParams: Record<string, string | string[] | undefin
     "maxDistance",
     "guestCapacity",
     "category",
+    "checkInDate",
+    "checkOutDate",
   ];
 
   passThrough.forEach((key) => {

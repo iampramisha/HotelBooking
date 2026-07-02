@@ -6,6 +6,7 @@ import  catchAsyncErrors  from "@/backend/middlewares/catchAsyncErrors";
 import APIFilters from "../utils/apiFilters";
 import { roundDistance, sortRoomsByDistance } from "../utils/haversine";
 import { geocodeAddress, locationFromGeocodeResult } from "../utils/geocodeAddress";
+import Booking from "../models/booking";
 
 /** Backfill coordinates for rooms saved before geocoding worked. */
 async function resolveRoomCoordinates(rooms: IRoom[]): Promise<IRoom[]> {
@@ -54,6 +55,25 @@ export const allRooms = async (req: NextRequest, params?: any) => {
 
   // Apply search & filters
   const apiFilters = new APIFilters(Room, queryStr).search().filter();
+
+  const checkInDateStr = searchParams.get("checkInDate");
+  const checkOutDateStr = searchParams.get("checkOutDate");
+  let bookedRoomIds: any[] = [];
+  if (checkInDateStr && checkOutDateStr) {
+    const checkInDate = new Date(checkInDateStr);
+    const checkOutDate = new Date(checkOutDateStr);
+    if (!isNaN(checkInDate.getTime()) && !isNaN(checkOutDate.getTime())) {
+      const bookings = await Booking.find({
+        checkInDate: { $lt: checkOutDate },
+        checkOutDate: { $gt: checkInDate },
+      });
+      bookedRoomIds = bookings.map((b: any) => b.room);
+    }
+  }
+
+  if (bookedRoomIds.length > 0) {
+    apiFilters.query = apiFilters.query.find({ _id: { $nin: bookedRoomIds } });
+  }
 
   const currentPage = Math.max(1, Number(queryStr.page) || 1);
 

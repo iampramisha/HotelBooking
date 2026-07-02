@@ -29,7 +29,7 @@ class APIFilters {
 
   filter(): APIFilters {
     const queryCopy = { ...this.queryStr };
-    const removeFields = ["location", "page", "lat", "lng", "maxDistance", "nearMe"];
+    const removeFields = ["location", "page", "lat", "lng", "maxDistance", "nearMe", "checkInDate", "checkOutDate"];
     removeFields.forEach((el) => delete queryCopy[el]);
 
     Object.keys(queryCopy).forEach((key) => {
