@@ -1,6 +1,8 @@
 import HomeComponent from "@/components/home";
 import Error from "./error";
 import 'leaflet/dist/leaflet.css';
+import { NextRequest } from "next/server";
+import { allRooms } from "@/backend/controllers/roomControllers";
 
 export const metadata = {
   title: "HomePage - BookIT",
@@ -29,12 +31,10 @@ const getRooms = async (searchParams: Record<string, string | string[] | undefin
     }
   });
 
-  const queryString = urlParams.toString();
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/rooms?${queryString}`, {
-    cache: "no-cache",
-  });
-
+  // Call the controller directly — avoids broken NEXT_PUBLIC_API_URL in production
+  const fakeUrl = `http://localhost/api/rooms?${urlParams.toString()}`;
+  const fakeReq = new NextRequest(fakeUrl);
+  const res = await allRooms(fakeReq);
   return res.json();
 };
 
