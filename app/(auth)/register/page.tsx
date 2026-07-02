@@ -1,6 +1,6 @@
 
 import Register from '@/components/auth/register'
-import React, { useState } from 'react'
+import React from 'react'
 const RegisterPage = () => {
 
   return (
