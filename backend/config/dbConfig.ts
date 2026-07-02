@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import "@/models";
+
 const dbConnect=async ()=>{
     if(mongoose.connection.readyState >=1){
         return 
